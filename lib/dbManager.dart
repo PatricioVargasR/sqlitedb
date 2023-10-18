@@ -1,11 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' as io;
 
+import 'package:sqlitedb/students.dart';
+
 class DBManager {
-  static Database? _db;
+  static Database? _db; // Objeto de tipo base de datos
   static const String ID = 'controlNum';
   static const String NAME = 'name';
   static const String APEPA = 'apepa';
@@ -39,34 +42,58 @@ class DBManager {
             "$NAME TEXT, $APEPA TEXT, $APEMA TEXT, $TEL TEXT, "
             "$EMAIL TEXT, $PHOTO_NAME TEXT)");
   }
-  // Create
-  Future<int> insertStudent(Map<String, dynamic> student) async {
-    Database? database = await db;
-    return await database!.insert(TABLE, student);
+
+  //Insert
+  Future<Students> save(Students student) async{
+    var dbClient = await _db;
+    student.controlNum = await dbClient!.insert(TABLE, student.toMap());
+    return student;
   }
 
-  // Read
-  Future<List<Map<String, dynamic>>> getStudents() async {
-    Database? database = await db;
-    return await database!.query(TABLE);
-  }
+  //Select
+  Future<List<Students>> getStudents()async{
+    var dbClient = await (db);
+    List<Map> maps = await dbClient!.query(TABLE,
+        columns: [ID, NAME, APEPA, APEMA, TEL, EMAIL, PHOTO_NAME]);
+    List<Students> students = [];
 
-  // Update
-  Future<int> updateStudent(Map<String, dynamic> student) async {
-    Database? database = await db;
-    return await database!.update(
-      TABLE,
-      student,
-      where: '$ID = ?',
-      whereArgs: [student[ID]],
-    );
+    // Solo para fines prácticos
+    print(students.length);
+
+    if (maps.isNotEmpty){
+
+      for(int i = 0; i < maps.length; i++){
+
+        // Visualizar datos solo para depurar
+        print("Datos");
+        print(Students.fromMap(maps[i] as Map<String, dynamic>));
+
+        students.add(Students.fromMap(maps[i] as Map<String, dynamic>));
+
+      }
+
+    }
+    return students;
   }
 
   // Delete
-  Future<int> deleteStudent(int studentID) async {
-    Database? database = await db;
-    return await database!
-        .delete(TABLE, where: '$ID = ?', whereArgs: [studentID]);
+  Future<int> delete(int id) async{
+    var dbClient = await (db);
+    return await dbClient!.delete(TABLE, where: '$ID = ?', whereArgs: [id]);
   }
+
+  //Update
+  Future<int> update(Students student) async {
+    var dbClient = await (db);
+    return await dbClient!.update((TABLE),
+        student.toMap(), where: '$ID = ?', whereArgs: [student.controlNum]);
+  }
+
+  //Close DB
+  Future close() async{
+    var dbClient = await (db);
+    dbClient!.close();
+  }
+
 }
 
