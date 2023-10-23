@@ -85,8 +85,8 @@ class DBManager {
   //Update
   Future<int> update(Students student) async {
     var dbClient = await (db);
-    return await dbClient!.update((TABLE),
-        student.toMap(), where: '$ID = ?', whereArgs: [student.controlNum]);
+    return await dbClient!.update(TABLE, student.toMap(),
+       where: '$ID = ?', whereArgs: [student.controlNum]);
   }
 
   //Close DB

@@ -30,7 +30,7 @@ class Students {
       'apema': apema,
       'tel': tel,
       'email': email,
-      'photho_name': photo_name
+      'photo_name': photo_name
     };
     return map;
   } // Manda el objeto a cualquier elemento
