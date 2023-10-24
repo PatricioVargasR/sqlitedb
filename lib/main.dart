@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sqlitedb/dbManager.dart';
-import 'package:sqlitedb/students.dart';
+import 'package:sqlitedb/student.dart';
 
 import 'package:sqlitedb/convert_utility.dart';
 
@@ -32,7 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<Students>>? Student;
+  Future<List<Student>>? Studentss;
   TextEditingController controlNumController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController apepaController = TextEditingController();
@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
   String? apema = '';
   String? tel = '';
   String? email = '';
-  String? photoName = '';
+  String? photoname = '';
 
   //Update control
   int? currentUserId;
@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
   //Métodos de usuario
   refreshList() {
     setState(() {
-      Student = dbHelper.getStudents();
+      Studentss = dbHelper.getStudents();
     });
   }
 
@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         .then((value) async {
       Uint8List? imageBytes = await value!.readAsBytes();
       setState(() {
-        photoName = Utility.base64String(imageBytes!);
+        photoname = Utility.base64String(imageBytes);
       });
     });
   }
@@ -102,7 +102,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           verticalDirection: VerticalDirection.down,
           children: [
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             //            TextFormField(
             //              controller: controlNumController,
             //              keyboardType: TextInputType.number, // Teclado númerico
@@ -116,8 +116,8 @@ class _HomePageState extends State<HomePage> {
               controller: nameController,
               keyboardType: TextInputType.text,
               // Teclado númerico
-              decoration: InputDecoration(
-                labelText: 'Name controller',
+              decoration: const InputDecoration(
+                labelText: 'Name',
               ),
               validator: (val) => val!.isEmpty ? 'Enter your name' : null,
               onSaved: (val) => name = val!,
@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
               controller: apepaController,
               keyboardType: TextInputType.text,
               // Teclado númerico
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Apellido Paterno',
               ),
               validator: (val) => val!.isEmpty ? 'Enter apema' : null,
@@ -138,7 +138,7 @@ class _HomePageState extends State<HomePage> {
               controller: apemaController,
               keyboardType: TextInputType.text,
               // Teclado númerico
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Apellido Materno',
               ),
               validator: (val) =>
@@ -151,9 +151,9 @@ class _HomePageState extends State<HomePage> {
               keyboardType: TextInputType.text,
               // Teclado númerico
               decoration: const InputDecoration(
-                labelText: 'Telefono ',
+                labelText: 'Telefono',
               ),
-              validator: (val) => val!.isEmpty ? 'Enter control Number' : null,
+              validator: (val) => val!.isEmpty ? 'Enter Telefono' : null,
               onSaved: (val) => tel = val!,
             ),
             TextFormField(
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
               decoration: const InputDecoration(
                 labelText: 'Email',
               ),
-              validator: (val) => val!.isEmpty ? 'Enter email c' : null,
+              validator: (val) => val!.isEmpty ? 'Enter email' : null,
               onSaved: (val) => email = val!,
             ),
             Row(
@@ -194,7 +194,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Lista que se puede scrollear
-  SingleChildScrollView userDataTable(List<Students>? Student) {
+  SingleChildScrollView userDataTable(List<Student>? Studentss) {
     return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: DataTable(
@@ -207,12 +207,12 @@ class _HomePageState extends State<HomePage> {
             DataColumn(label: Text('Email')),
             DataColumn(label: Text('Delete')),
           ],
-          rows: Student!
+          rows: Studentss!
               .map((student) => DataRow(cells: [
                     DataCell(Container(
                       width: 80,
                       height: 120,
-                      child: Utility.ImageFromBase64String(student.photo_name!),
+                      child: Utility.ImageFromBase64String(student.photoName!),
                     )),
                     DataCell(Text(student.name!), onTap: () {
                       setState(() {
@@ -246,7 +246,7 @@ class _HomePageState extends State<HomePage> {
     return Expanded(
         child: SingleChildScrollView(
       child: FutureBuilder(
-        future: Student,
+        future: Studentss,
         builder: (context, AsyncSnapshot<dynamic> snapshot) {
           // Verificamos datos
           if (snapshot.hasData) {
@@ -266,26 +266,26 @@ class _HomePageState extends State<HomePage> {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       if (isUpdating) {
-        Students student = Students(
+        Student student = Student(
           controlNum: currentUserId,
           name: name,
           apepa: apepa,
           apema: apema,
           tel: tel,
           email: email,
-          photo_name: photoName,
+          photoName: photoname,
         );
         dbHelper.update(student);
         isUpdating = false;
       } else {
-        Students student = Students(
+        Student student = Student(
             controlNum: null,
             name: name,
             apepa: apepa,
             apema: apema,
             email: email,
             tel: tel,
-            photo_name: photoName);
+            photoName: photoname,);
         dbHelper.save(student);
       }
       clearFields();

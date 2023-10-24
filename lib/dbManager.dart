@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
+// import 'package:flutter/cupertino.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io' as io;
 
-import 'package:sqlitedb/students.dart';
+import 'package:sqlitedb/student.dart';
 
 class DBManager {
   static Database? _db; // Objeto de tipo base de datos
@@ -44,18 +44,18 @@ class DBManager {
   }
 
   //Insert
-  Future<Students> save(Students student) async{
+  Future<Student> save(Student student) async{
     var dbClient = await _db;
     student.controlNum = await dbClient!.insert(TABLE, student.toMap());
     return student;
   }
 
   //Select
-  Future<List<Students>> getStudents()async{
+  Future<List<Student>> getStudents()async{
     var dbClient = await (db);
     List<Map> maps = await dbClient!.query(TABLE,
         columns: [ID, NAME, APEPA, APEMA, TEL, EMAIL, PHOTO_NAME]);
-    List<Students> students = [];
+    List<Student> students = [];
 
     // Solo para fines prácticos
     print(students.length);
@@ -66,9 +66,9 @@ class DBManager {
 
         // Visualizar datos solo para depurar
         print("Datos");
-        print(Students.fromMap(maps[i] as Map<String, dynamic>));
+        print(Student.fromMap(maps[i] as Map<String, dynamic>));
 
-        students.add(Students.fromMap(maps[i] as Map<String, dynamic>));
+        students.add(Student.fromMap(maps[i] as Map<String, dynamic>));
 
       }
 
@@ -83,7 +83,7 @@ class DBManager {
   }
 
   //Update
-  Future<int> update(Students student) async {
+  Future<int> update(Student student) async {
     var dbClient = await (db);
     return await dbClient!.update(TABLE, student.toMap(),
        where: '$ID = ?', whereArgs: [student.controlNum]);

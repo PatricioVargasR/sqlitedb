@@ -1,6 +1,6 @@
 // Case primitiva
 
-class Students {
+class Student {
   // Utilizamos comodines - Evita que haya error al estar varcia
   int? controlNum;
   String? name;
@@ -8,21 +8,21 @@ class Students {
   String? apema;
   String? tel;
   String? email;
-  String? photo_name;
+  String? photoName;
 
   // Creamos un constructor
-  Students ({
+  Student ({
     this.controlNum,
     this.name,
     this.apepa,
     this.apema,
     this.tel,
     this.email,
-    this.photo_name,
+    this.photoName,
   });
 
   // Creamos métodos
-  Map<String,dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'controlNum': controlNum,
       'name': name,
@@ -30,18 +30,18 @@ class Students {
       'apema': apema,
       'tel': tel,
       'email': email,
-      'photo_name': photo_name
+      'photo_name': photoName
     };
     return map;
   } // Manda el objeto a cualquier elemento
 
-  Students.fromMap(Map<String, dynamic> map) { // Recibe los parámetros
+  Student.fromMap(Map<String, dynamic> map) { // Recibe los parámetros
     controlNum = map['controlNUm'];
     name = map['name'];
     apepa = map['apepa'];
     apema = map['apema'];
     tel = map['tel'];
     email = map['email'];
-    photo_name = map['photo_name'];
+    photoName = map['photo_name'];
   }
 }
